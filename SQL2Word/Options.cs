@@ -13,17 +13,17 @@ namespace SQL2Word
         public string TemplateFile { get; set; }
         [Option('o', "output_file", HelpText = "File to which output goes")]
         public string OutputFile { get; set; }
-
-        [Option('a', "append", HelpText = "append output to existing files in output directory",
-            DefaultValue = false)]
-        public bool Append { get; set; }
+//
+//        [Option('a', "append", HelpText = "append output to existing files in output directory",
+//            DefaultValue = false)]
+//        public bool Append { get; set; }
 
         [OptionArray('p', "params",
             HelpText = "pass parameters as list of tuples: key1=value1 key2=value2 ...")]
         public string[] ParametersArg { get; set; }
-
-        [Option('s', "show parameters", HelpText = "show available parameters")]
-        public bool ListParameters { get; set; }
+//
+//        [Option('s', "show parameters", HelpText = "show available parameters")]
+//        public bool ListParameters { get; set; }
 
         [Option('c', "connection options", HelpText = "file with connection options:"
             + "\n\tUserID=YourUsername"
