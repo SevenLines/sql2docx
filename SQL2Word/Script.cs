@@ -56,11 +56,11 @@ namespace SQLDynamic
             {
                 if (prms.ContainsKey(m.Groups[1].Value))
                 {
-                    return prms[m.Groups[1].Value];
+                    return m.Value.Insert(m.Value.IndexOf(@"/*$*/"), prms[m.Groups[1].Value]);
                 }
                 return m.Value;
             }));
-            return reg.Replace((String)this._text.Clone(), evaluator);
+            return reg.Replace((String)_text.Clone(), evaluator);
         }
     }
 }
