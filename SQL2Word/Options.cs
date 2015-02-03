@@ -13,6 +13,8 @@ namespace SQL2Word
         public string TemplateFile { get; set; }
         [Option('o', "output_file", HelpText = "File to which output goes")]
         public string OutputFile { get; set; }
+        [Option('s', "show_result_file_on_end", HelpText = "Open file at the process end")]
+        public bool ShowResultFileOnEnd { get; set; }
 //
 //        [Option('a', "append", HelpText = "append output to existing files in output directory",
 //            DefaultValue = false)]
