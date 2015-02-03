@@ -73,13 +73,13 @@
     <None Include="files\base2.docx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="files\output2.docx">
+    <None Include="files\output3.docx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="files\temp.docx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="files\ПОДД-2014-город.docx">
+    <None Include="files\base.docx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />
@@ -88,7 +88,6 @@
     <Folder Include="output\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="files\info.txt" />
     <Content Include="icon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

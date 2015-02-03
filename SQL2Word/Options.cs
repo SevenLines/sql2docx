@@ -15,6 +15,10 @@ namespace SQL2Word
         public string OutputFile { get; set; }
         [Option('s', "show_result_file_on_end", HelpText = "Open file at the process end")]
         public bool ShowResultFileOnEnd { get; set; }
+        [Option('q', "save_with_queries", HelpText = "Сохраняет скрипты вместе с таблицам чтобы потом можно было бы обновить документ")]
+        public bool SaveQueries{ get; set; }
+        [Option('u', "update_file", HelpText = "Обновить файл")]
+        public bool UpdateFile { get; set; }
 //
 //        [Option('a', "append", HelpText = "append output to existing files in output directory",
 //            DefaultValue = false)]

@@ -11,7 +11,7 @@ namespace SQLDynamic
     {
         String _text;
         String _title;
-        Regex reg = new Regex(@"/\*\$(\w+)\*/(.*?)/\*\$\*/");
+        Regex reg = new Regex(@"(/\*\$(\w+)\*/)(.*?)(/\*\$\*/)");
         Dictionary<string, string> prms = new Dictionary<string, string>();
 
         public Script(String title, FileInfo file)
@@ -54,9 +54,9 @@ namespace SQLDynamic
         {
             var evaluator = new MatchEvaluator(new Func<Match, String>( m =>
             {
-                if (prms.ContainsKey(m.Groups[1].Value))
+                if (prms.ContainsKey(m.Groups[2].Value))
                 {
-                    return m.Value.Insert(m.Value.IndexOf(@"/*$*/"), prms[m.Groups[1].Value]);
+                    return m.Groups[1].Value + prms[m.Groups[2].Value] + m.Groups[4].Value;
                 }
                 return m.Value;
             }));
