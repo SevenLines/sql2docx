@@ -98,8 +98,8 @@ WHERE name like '%/*$NamePart*/Mic/*$*/%'
 All script flags must be at the first cell at first paragraph of last row of table. Script must start at second paragraph of the cell.
 
 
-[CONTENT] - if you want to script to be parsed with programm it must contain this flag.<br>
-[WITH_COUNTER] - add first column with number of row
-[USE_ZERO_CONUTER] - starts counter from 0
-[AUTO_EXPAND] - by default programm never adds new columns to table. Add this flag to change this behavior and make programm add new columns if there are not enough.
-[REPLACE_TABLE_ON_EMPTY] - replace table with text if there is no rows at result
+**[CONTENT]** - if you want to script to be parsed with programm it must contain this flag.<br>
+**[WITH_COUNTER]** - add first column with number of row<br>
+**[USE_ZERO_CONUTER]** - starts counter from 0<br>
+**[AUTO_EXPAND]** - by default programm never adds new columns to table. Add this flag to change this behavior and make programm add new columns if there are not enough.<br>
+**[REPLACE_TABLE_ON_EMPTY]** - replace table with text if there is no rows at result
