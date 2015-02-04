@@ -1,7 +1,6 @@
 # sql2docx
 Simple utility which let's one create templates file in docx format and fill it with from database.
 
-___
 Create simple docx document at the executable dir (call it **template.docx**) and add table in it with next content:
 
 <table>
@@ -44,24 +43,19 @@ Run the next command:
 If everything went right you will find file result.docx on **C:** drive with next content
 
 <table>
-<tr>
-  <td>#</td>
-  <td>name</td>
-  <td>secondname</td>
-</tr>
-<tr>
-  <td>1</td>
-  <td>John</td>
-  <td>James</td>
-</tr>
-<tr>
-  <td>3</td>
-  <td>Mick</td>
-  <td>Jagger</td>
-</tr>
-<tr>
-  <td>2</td>
-  <td>Kate</td>
-  <td>Sanders</td>
-</tr>
+  <tr>
+    <td>#</td><td>name</td><td>secondname</td>
+  </tr>
+  <tr>
+    <td>1</td><td>John</td><td>James</td>
+  </tr>
+  <tr>
+    <td>3</td><td>Mick</td><td>Jagger</td>
+  </tr>
+  <tr>
+    <td>2</td><td>Kate</td><td>Sanders</td>
+  </tr>
 </table>
+
+# Availabe options
+---
