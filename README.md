@@ -50,10 +50,10 @@ If everything went right you will find file result.docx on **C:** drive with nex
     <td>1</td><td>John</td><td>James</td>
   </tr>
   <tr>
-    <td>3</td><td>Mick</td><td>Jagger</td>
+    <td>2</td><td>Mick</td><td>Jagger</td>
   </tr>
   <tr>
-    <td>2</td><td>Kate</td><td>Sanders</td>
+    <td>3</td><td>Kate</td><td>Sanders</td>
   </tr>
 </table>
 
@@ -96,7 +96,6 @@ WHERE name like '%/*$NamePart*/Mic/*$*/%'
 
 # Table script flags
 All script flags must be at the first cell at first paragraph of last row of table. Script must start at second paragraph of the cell.
-
 
 **[CONTENT]** - if you want to script to be parsed with programm it must contain this flag.<br>
 **[WITH_COUNTER]** - add first column with number of row<br>
