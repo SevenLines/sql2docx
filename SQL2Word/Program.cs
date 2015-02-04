@@ -17,9 +17,6 @@ namespace SQL2Word
 {
     class Program
     {
-
-
-
         private static void DrawProgressBar(int complete, int maxVal, int barSize, char progressCharacter)
         {
             Console.CursorVisible = false;
@@ -113,7 +110,7 @@ namespace SQL2Word
                 return;                
             }
 
-
+            // замена плэйсхолдеров
             var re = new Regex(@"{.*?}");
             foreach (var paragraph in doc.Paragraphs)
             {
@@ -164,7 +161,14 @@ namespace SQL2Word
 
             try
             {
-                doc.SaveAs(options.OutputFile);
+                if (options.OutputFile == options.TemplateFile)
+                {
+                    doc.Save();
+                }
+                else
+                {
+                    doc.SaveAs(options.OutputFile);
+                }
                 if (options.ShowResultFileOnEnd)
                 {
                     Process.Start(options.OutputFile);
@@ -177,8 +181,6 @@ namespace SQL2Word
             }
 
             connection.Close();
-            
-            
         }
     }
 }
