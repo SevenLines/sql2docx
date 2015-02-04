@@ -42,7 +42,7 @@ namespace SQL2Word
 
         public static KeyValuePair<string, string>? ParseOptionLine(string line)
         {
-            var regex = new Regex(@"(\w+):\s*(\w+|[\(.)/]+)");
+            var regex = new Regex(@"(\w+):\s*([\w\\(.)/]+)");
             var match = regex.Match(line);
 
             if (!match.Success) return null;

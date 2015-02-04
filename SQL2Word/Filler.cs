@@ -21,10 +21,8 @@ namespace SQL2Word
             UPDATE_SCRIPT,
         };
 
-        static Regex re_REPLACE_TABLE_ON_EMPTY = new Regex(@"\[REPLACE_TABLE_ON_EMPTY(:.*?)?\]");
-        static Regex re_UPDATE_SCRIPT = new Regex(@"\[UPDATE_SCRIPT(:(.*?))?\]");
-
-        private static String wordopenxml_namespace = "http://schemas.openxmlformats.org/wordprocessingml/2006/main";
+        static readonly Regex re_REPLACE_TABLE_ON_EMPTY = new Regex(@"\[REPLACE_TABLE_ON_EMPTY(:.*?)?\]");
+        static readonly Regex re_UPDATE_SCRIPT = new Regex(@"\[UPDATE_SCRIPT(:(.*?))?\]");
 
         /// <summary>
         /// Return all tokens should used in current cell,
@@ -32,7 +30,7 @@ namespace SQL2Word
         /// </summary>
         /// <param name="cell"></param>
         /// <returns></returns>
-        public static List<TOKENS> GetCellTokens(Cell cell, out Dictionary<TOKENS, String> special_parameters)
+        private static List<TOKENS> GetCellTokens(Cell cell, out Dictionary<TOKENS, String> special_parameters)
         {
             var output = new List<TOKENS>();
             special_parameters = new Dictionary<TOKENS, string>();
@@ -77,26 +75,26 @@ namespace SQL2Word
         }
 
 
-        public static List<TOKENS> GetTableTokens(Table table, out Dictionary<TOKENS, string> parameters)
+        private static List<TOKENS> GetTableTokens(Table table, out Dictionary<TOKENS, string> parameters)
         {
             var row = GetTableScriptRow(table);
             var cell = row.Cells.First();
             return GetCellTokens(cell, out parameters);
         }
 
-        public static String GetTableScript(Table table)
+        private static String GetTableScript(Table table)
         {
             var row = GetTableScriptRow(table);
             var cell = row.Cells.First();
             return GetCellContent(cell);
         }
 
-        public static Row GetTableScriptRow(Table table)
+        private static Row GetTableScriptRow(Table table)
         {
             return table.Rows.Last();
         }
 
-        public static void SetTableScriptRowText(Table table, String text)
+        private static void SetTableScriptRowText(Table table, String text)
         {
             var cell = GetTableScriptRow(table).Cells.First();
             if (cell != null)
@@ -110,7 +108,7 @@ namespace SQL2Word
         /// </summary>
         /// <param name="cell"></param>
         /// <returns></returns>
-        public static String GetCellContent(Cell cell, int skip=1)
+        private static String GetCellContent(Cell cell, int skip=1)
         {
             StringBuilder output = new StringBuilder();
             foreach (var paragraph in cell.Paragraphs.Skip(skip))
@@ -120,7 +118,7 @@ namespace SQL2Word
             return output.ToString();
         }
 
-        public static void SetCellContent(Cell cell, String text)
+        private static void SetCellContent(Cell cell, String text)
         {
             cell.Paragraphs.ForEach(paragraph => paragraph.Remove(false));
             cell.InsertParagraph(text);
@@ -166,17 +164,7 @@ namespace SQL2Word
             {
                 while (reader.Read())
                 {
-                    Row r;
-                    if (useFirstRow && isFirstRow)
-                    {
-                        r = table.Rows.Last();
-                        r.Paragraphs.ForEach( p => p.Remove(false));
-                    }
-                    else
-                    {
-                        r = table.InsertRow();
-                    }
-
+                    var r = table.InsertRow();
                     if (tokens.Contains(TOKENS.WITH_COUNTER))
                     {
                         var p = r.Cells[0].Paragraphs.First();
@@ -220,12 +208,15 @@ namespace SQL2Word
             Dictionary<TOKENS, string> specialParameters)
         {
             script = Regex.Replace(script, "--.*", "").Replace("\n", ""); // remove oneline SQL-comments
-            var tokenString = getTokensString(specialParameters);
-            if (!specialParameters.ContainsKey(TOKENS.UPDATE_SCRIPT))
+            if (specialParameters != null)
             {
-                tokenString = "[UPDATE_SCRIPT:" + contentStart.ToString() + "]" + tokenString;
+                var tokenString = getTokensString(specialParameters);
+                if (!specialParameters.ContainsKey(TOKENS.UPDATE_SCRIPT))
+                {
+                    tokenString = "[UPDATE_SCRIPT:" + contentStart.ToString() + "]" + tokenString;
+                }
+                script = "/*" + tokenString + "*/" + script;
             }
-            script = "/*" + tokenString + "*/" + script;
 
             var row = table.InsertRow();
             row.MergeCells(0, row.ColumnCount - 1);
@@ -285,14 +276,18 @@ namespace SQL2Word
                 }
             }
 
-            if (saveQueries)
+            if (counter > min)
             {
+                // удаляем строку со скриптом
+                contentRow.Remove();
+            }
+
+            if (saveQueries && !String.IsNullOrEmpty(script))
+            {
+                // сохраняем запрос
                 _addScriptRow(table, script, contentStart, specialParameters);
             }
 
-            // удаляем строку со скриптом
-            contentRow.Remove();
-            
             return true;
         }
 
@@ -320,6 +315,7 @@ namespace SQL2Word
             // скрипт должен быть в последней строке
             var row = table.Rows.Last();
             var script = GetCellContent(row.Cells.FirstOrDefault(), 0);
+            row.Remove();
 
             Dictionary<TOKENS, string> specailParameters;
             var tokens = GetCellTokens(row.Cells.FirstOrDefault(), out specailParameters);
@@ -331,22 +327,23 @@ namespace SQL2Word
             if (!Int32.TryParse(specailParameters[TOKENS.UPDATE_SCRIPT], out firstDataRow))
                 return;
 
-            while (table.RowCount > firstDataRow)
+            while (table.RowCount >= firstDataRow)
             {
-                table.Rows[firstDataRow].Remove();
+                table.Rows.Last().Remove();
             }
 
-            script = re_UPDATE_SCRIPT.Replace(script, "");
             var dynamicScript = new Script("", script);
             script = dynamicScript.Text(parameters);
 
             var contentStart = table.RowCount;
 
-            _fillTable(table, connection, script, tokens, true);
+            _fillTable(table, connection, script, tokens);
 
             if (saveQueries)
             {
-                _addScriptRow(table, script, contentStart, specailParameters);
+                _addScriptRow(table, script, 
+                    firstDataRow,
+                    null);
             }
         }
     }
