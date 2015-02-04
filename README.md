@@ -101,4 +101,4 @@ All script flags must be at the first cell at first paragraph of last row of tab
 **[WITH_COUNTER]** - add first column with number of row<br>
 **[USE_ZERO_CONUTER]** - starts counter from 0<br>
 **[AUTO_EXPAND]** - by default programm never adds new columns to table. Add this flag to change this behavior and make programm add new columns if there are not enough.<br>
-**[REPLACE_TABLE_ON_EMPTY]** - replace table with text if there is no rows at result
+**[REPLACE_TABLE_ON_EMPTY:Some message about no rows]** - replace table with text after colon if there is no rows at result
