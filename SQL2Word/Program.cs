@@ -3,15 +3,10 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
-using System.Xml.Linq;
-using System.Xml.XPath;
 using CommandLine;
 using Novacode;
-using DocumentFormat.OpenXml;
-using DocumentFormat.OpenXml.Wordprocessing;
 
 namespace SQL2Word
 {
@@ -155,7 +150,7 @@ namespace SQL2Word
                 }
                 i++;
             }
-            DrawProgressBar(doc.Tables.Count, doc.Tables.Count, 30, '█');
+            DrawProgressBar(1, 1, 30, '█');
             Console.WriteLine();
             Console.WriteLine("Сохраняю резульат в " + options.OutputFile);
 

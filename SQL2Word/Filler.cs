@@ -21,7 +21,7 @@ namespace SQL2Word
             UPDATE_SCRIPT,
         };
 
-        static readonly Regex re_REPLACE_TABLE_ON_EMPTY = new Regex(@"\[REPLACE_TABLE_ON_EMPTY(:.*?)?\]");
+        static readonly Regex re_REPLACE_TABLE_ON_EMPTY = new Regex(@"\[REPLACE_TABLE_ON_EMPTY(:(.*?))?\]");
         static readonly Regex re_UPDATE_SCRIPT = new Regex(@"\[UPDATE_SCRIPT(:(.*?))?\]");
 
         /// <summary>
@@ -61,7 +61,7 @@ namespace SQL2Word
             if (match.Success)
             {
                 output.Add(TOKENS.REPLACE_TABLE_ON_EMPTY);
-                special_parameters[TOKENS.REPLACE_TABLE_ON_EMPTY] = match.Groups[1].Value;
+                special_parameters[TOKENS.REPLACE_TABLE_ON_EMPTY] = match.Groups[2].Value;
             }
 
             match = re_UPDATE_SCRIPT.Match(text);
@@ -125,7 +125,7 @@ namespace SQL2Word
         }
 
 
-        private static int _fillTable(
+        private static bool _fillTable(
             Table table, 
             SqlConnection connection, 
             String script,
@@ -134,7 +134,7 @@ namespace SQL2Word
         {
             if (String.IsNullOrEmpty(script))
             {
-                return 0;
+                return false;
             }
 
             var sql = new SqlCommand(script, connection);
@@ -147,7 +147,7 @@ namespace SQL2Word
             catch (SqlException ex)
             {
                 SetTableScriptRowText(table, ex.Message);
-                return 0;
+                return false;
             }
 
             int counter = 1;
@@ -199,7 +199,7 @@ namespace SQL2Word
 
             reader.Close();
 
-            return counter;
+            return !isFirstRow;
         }
 
         private static void _addScriptRow(Table table, 
@@ -262,11 +262,10 @@ namespace SQL2Word
 
             var contentRow = GetTableScriptRow(table);
             var contentStart = table.RowCount;
-            var counter = _fillTable(table, connection, script, tokens);
+            var hasRows = _fillTable(table, connection, script, tokens);
 
             // if no values to output
-            var min = tokens.Contains(TOKENS.USE_ZERO_CONUTER) ? 0 : 1;
-            if (counter <= min)
+            if (!hasRows)
             {
                 if (tokens.Contains(TOKENS.REPLACE_TABLE_ON_EMPTY))
                 {
@@ -276,11 +275,11 @@ namespace SQL2Word
                 }
             }
 
-            if (counter > min)
-            {
+//            if (hasRows)
+//            {
                 // удаляем строку со скриптом
                 contentRow.Remove();
-            }
+//            }
 
             if (saveQueries && !String.IsNullOrEmpty(script))
             {
