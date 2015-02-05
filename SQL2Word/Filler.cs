@@ -170,7 +170,10 @@ namespace SQL2Word
                         r = table.Rows.Last();
                         foreach (var paragraph in r.Paragraphs)
                         {
-                            paragraph.RemoveText(0);
+                            if (!String.IsNullOrEmpty(paragraph.Text))
+                            {
+                                paragraph.RemoveText(0);
+                            };
                         }
                     }
                     else
