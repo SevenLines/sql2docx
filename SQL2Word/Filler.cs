@@ -164,7 +164,20 @@ namespace SQL2Word
             {
                 while (reader.Read())
                 {
-                    var r = table.InsertRow();
+                    Row r;
+                    if (isFirstRow && useFirstRow)
+                    {
+                        r = table.Rows.Last();
+                        foreach (var paragraph in r.Paragraphs)
+                        {
+                            paragraph.RemoveText(0);
+                        }
+                    }
+                    else
+                    {
+                        r = table.InsertRow();
+                    }
+
                     if (tokens.Contains(TOKENS.WITH_COUNTER))
                     {
                         var p = r.Cells[0].Paragraphs.First();
@@ -327,7 +340,7 @@ namespace SQL2Word
             if (!Int32.TryParse(specailParameters[TOKENS.UPDATE_SCRIPT], out firstDataRow))
                 return;
 
-            while (table.RowCount >= firstDataRow)
+            while (table.RowCount  > 1 && table.RowCount >= firstDataRow)
             {
                 table.Rows.Last().Remove();
             }
@@ -337,7 +350,7 @@ namespace SQL2Word
 
             var contentStart = table.RowCount;
 
-            _fillTable(table, connection, script, tokens);
+            _fillTable(table, connection, script, tokens, table.RowCount == 1 && firstDataRow == 1);
 
             if (saveQueries)
             {
