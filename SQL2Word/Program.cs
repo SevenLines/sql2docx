@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using CommandLine;
@@ -107,7 +108,27 @@ namespace SQL2Word
 
             // замена плэйсхолдеров
             var re = new Regex(@"{.*?}");
-            foreach (var paragraph in doc.Paragraphs)
+
+            // формируем список параграфов
+            IEnumerable<Paragraph> allParagraphas = doc.Paragraphs;
+            if (doc.Headers.even != null)
+            {
+                allParagraphas = allParagraphas.Union(doc.Headers.even.Paragraphs);
+            }
+            if (doc.Headers.odd != null)
+            {
+                allParagraphas = allParagraphas.Union(doc.Headers.odd.Paragraphs);
+            }
+            if (doc.Footers.even != null)
+            {
+                allParagraphas = allParagraphas.Union(doc.Footers.even.Paragraphs);
+            }
+            if (doc.Footers.odd != null)
+            {
+                allParagraphas = allParagraphas.Union(doc.Footers.odd.Paragraphs);
+            }
+            // заменяем плэйсхолдеры
+            foreach (var paragraph in allParagraphas)
             {
                 if (re.IsMatch(paragraph.Text))
                 {
@@ -137,9 +158,10 @@ namespace SQL2Word
             }
 
             int i = 0;
+            int tablesCount = doc.Tables.Count;
             foreach (var t in doc.Tables)
             {
-                DrawProgressBar(i, doc.Tables.Count, 30, '█');
+                DrawProgressBar(i, tablesCount, 30, '█');
                 if (options.UpdateFile)
                 {
                     Filler.UpdateTable(t, connection, options.Parameters, options.SaveQueries);
