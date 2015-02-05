@@ -315,7 +315,6 @@ namespace SQL2Word
             var row = table.Rows.Last();
             
             var script = GetCellContent(row.Cells.FirstOrDefault(), 0);
-            var lastscript = script.Clone();
             row.Remove();
 
             Dictionary<TOKENS, string> specailParameters;
