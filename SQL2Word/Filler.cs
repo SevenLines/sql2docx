@@ -113,7 +113,7 @@ namespace SQL2Word
             StringBuilder output = new StringBuilder();
             foreach (var paragraph in cell.Paragraphs.Skip(skip))
             {
-                output.AppendLine(paragraph.Text);
+                output.AppendLine(paragraph.Text + " ");
             }
             return output.ToString();
         }
@@ -207,7 +207,7 @@ namespace SQL2Word
             int contentStart, 
             Dictionary<TOKENS, string> specialParameters)
         {
-            script = Regex.Replace(script, "--.*", "").Replace("\n", ""); // remove oneline SQL-comments
+            script = Regex.Replace(script, "--.*", "").Replace("\n", " "); // remove oneline SQL-comments
             if (specialParameters != null)
             {
                 var tokenString = getTokensString(specialParameters);
@@ -313,7 +313,9 @@ namespace SQL2Word
         {
             // скрипт должен быть в последней строке
             var row = table.Rows.Last();
+            
             var script = GetCellContent(row.Cells.FirstOrDefault(), 0);
+            var lastscript = script.Clone();
             row.Remove();
 
             Dictionary<TOKENS, string> specailParameters;
